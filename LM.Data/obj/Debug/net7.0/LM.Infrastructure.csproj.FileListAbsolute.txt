@@ -1,0 +1,15 @@
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Data\bin\Debug\net7.0\LM.Infrastructure.deps.json
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Data\bin\Debug\net7.0\LM.Infrastructure.dll
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Data\bin\Debug\net7.0\LM.Infrastructure.pdb
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Data\bin\Debug\net7.0\LM.Domain.dll
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Data\bin\Debug\net7.0\LM.Domain.pdb
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Data\obj\Debug\net7.0\LM.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Data\obj\Debug\net7.0\LM.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Data\obj\Debug\net7.0\LM.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Data\obj\Debug\net7.0\LM.Infrastructure.AssemblyInfo.cs
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Data\obj\Debug\net7.0\LM.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Data\obj\Debug\net7.0\LM.Infrastructure.csproj.CopyComplete
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Data\obj\Debug\net7.0\LM.Infrastructure.dll
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Data\obj\Debug\net7.0\refint\LM.Infrastructure.dll
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Data\obj\Debug\net7.0\LM.Infrastructure.pdb
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Data\obj\Debug\net7.0\ref\LM.Infrastructure.dll

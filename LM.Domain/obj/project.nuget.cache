@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "CaH4HEtY40Lwm5gkB6X7RctGYStyZgJt90ThCxRAbewYbAk31u1olWzt5z2dtqea90LOfuzv6ucBWU3CF6+06A==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\ioanb\\Repositories\\LibraryManagement\\LM.Domain\\LM.Domain.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ioanb\\.nuget\\packages\\mediatr\\12.1.1\\mediatr.12.1.1.nupkg.sha512",
+    "C:\\Users\\ioanb\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512",
+    "C:\\Users\\ioanb\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\7.0.11\\microsoft.aspnetcore.cryptography.internal.7.0.11.nupkg.sha512",
+    "C:\\Users\\ioanb\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\7.0.11\\microsoft.aspnetcore.cryptography.keyderivation.7.0.11.nupkg.sha512",
+    "C:\\Users\\ioanb\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\6.0.0\\microsoft.extensions.dependencyinjection.abstractions.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

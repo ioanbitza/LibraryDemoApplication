@@ -1,0 +1,17 @@
+C:\Users\ioanb\Repositories\LibraryManagement\LM.ConsoleApplication\obj\Debug\net7.0\LM.Application.csproj.AssemblyReference.cache
+C:\Users\ioanb\Repositories\LibraryManagement\LM.ConsoleApplication\obj\Debug\net7.0\LM.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ioanb\Repositories\LibraryManagement\LM.ConsoleApplication\obj\Debug\net7.0\LM.Application.AssemblyInfoInputs.cache
+C:\Users\ioanb\Repositories\LibraryManagement\LM.ConsoleApplication\obj\Debug\net7.0\LM.Application.AssemblyInfo.cs
+C:\Users\ioanb\Repositories\LibraryManagement\LM.ConsoleApplication\obj\Debug\net7.0\LM.Application.csproj.CoreCompileInputs.cache
+C:\Users\ioanb\Repositories\LibraryManagement\LM.ConsoleApplication\bin\Debug\net7.0\LM.Application.deps.json
+C:\Users\ioanb\Repositories\LibraryManagement\LM.ConsoleApplication\bin\Debug\net7.0\LM.Application.dll
+C:\Users\ioanb\Repositories\LibraryManagement\LM.ConsoleApplication\bin\Debug\net7.0\LM.Application.pdb
+C:\Users\ioanb\Repositories\LibraryManagement\LM.ConsoleApplication\bin\Debug\net7.0\LM.Domain.dll
+C:\Users\ioanb\Repositories\LibraryManagement\LM.ConsoleApplication\bin\Debug\net7.0\LM.Infrastructure.dll
+C:\Users\ioanb\Repositories\LibraryManagement\LM.ConsoleApplication\bin\Debug\net7.0\LM.Infrastructure.pdb
+C:\Users\ioanb\Repositories\LibraryManagement\LM.ConsoleApplication\bin\Debug\net7.0\LM.Domain.pdb
+C:\Users\ioanb\Repositories\LibraryManagement\LM.ConsoleApplication\obj\Debug\net7.0\LM.Application.csproj.CopyComplete
+C:\Users\ioanb\Repositories\LibraryManagement\LM.ConsoleApplication\obj\Debug\net7.0\LM.Application.dll
+C:\Users\ioanb\Repositories\LibraryManagement\LM.ConsoleApplication\obj\Debug\net7.0\refint\LM.Application.dll
+C:\Users\ioanb\Repositories\LibraryManagement\LM.ConsoleApplication\obj\Debug\net7.0\LM.Application.pdb
+C:\Users\ioanb\Repositories\LibraryManagement\LM.ConsoleApplication\obj\Debug\net7.0\ref\LM.Application.dll

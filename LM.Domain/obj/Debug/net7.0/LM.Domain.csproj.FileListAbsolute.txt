@@ -1,0 +1,12 @@
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Domain\bin\Debug\net7.0\LM.Domain.deps.json
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Domain\bin\Debug\net7.0\LM.Domain.dll
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Domain\bin\Debug\net7.0\LM.Domain.pdb
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Domain\obj\Debug\net7.0\LM.Domain.csproj.AssemblyReference.cache
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Domain\obj\Debug\net7.0\LM.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Domain\obj\Debug\net7.0\LM.Domain.AssemblyInfoInputs.cache
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Domain\obj\Debug\net7.0\LM.Domain.AssemblyInfo.cs
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Domain\obj\Debug\net7.0\LM.Domain.csproj.CoreCompileInputs.cache
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Domain\obj\Debug\net7.0\LM.Domain.dll
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Domain\obj\Debug\net7.0\refint\LM.Domain.dll
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Domain\obj\Debug\net7.0\LM.Domain.pdb
+C:\Users\ioanb\Repositories\LibraryManagement\LM.Domain\obj\Debug\net7.0\ref\LM.Domain.dll
