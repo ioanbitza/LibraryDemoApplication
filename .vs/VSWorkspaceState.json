@@ -1,0 +1,10 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\LM.ConsoleApp",
+    "\\LM.Data",
+    "\\LM.Data\\Repositories"
+  ],
+  "SelectedNode": "\\LM.Data\\Repositories\\InMemoryUserRepository.cs",
+  "PreviewInSolutionExplorer": false
+}
