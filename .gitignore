@@ -1,6 +1,7 @@
 # Ignore the bin and obj folders
 bin/
 obj/
+.vs/
 
 # Ignore user-specific files
 *.rsuser
