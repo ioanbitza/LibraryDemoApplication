@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LM.ConsoleApplication\LM.Application.csproj" />
+    <ProjectReference Include="..\LM.Application\LM.Application.csproj" />
     <ProjectReference Include="..\LM.Domain\LM.Domain.csproj" />
   </ItemGroup>
 
