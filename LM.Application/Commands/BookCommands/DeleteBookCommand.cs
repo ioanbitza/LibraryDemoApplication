@@ -1,5 +1,5 @@
-﻿using LM.ConsoleApplication.DTOs;
-using LM.Domain.ValueObjects;
+﻿using LM.Application.DTOs;
+using LM.Domain.Aggregates.Book;
 using MediatR;
 
 namespace LM.Application.Commands

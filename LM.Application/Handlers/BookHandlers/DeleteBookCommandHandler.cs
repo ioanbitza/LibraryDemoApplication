@@ -1,5 +1,5 @@
 ﻿using LM.Application.Commands;
-using LM.ConsoleApplication.DTOs;
+using LM.Application.DTOs;
 using LM.Domain.Repositories;
 using MediatR;
 
@@ -16,7 +16,7 @@ namespace LM.Application.Handlers
 
         public Task<BookDTO> Handle(DeleteBookCommand request, CancellationToken cancellationToken)
         {
-            var book = _bookRepository.RemoveBook(request.ISBN);
+            var book = _bookRepository.Remove(request.ISBN);
             var bookDTO = new BookDTO(book);
             return Task.FromResult(bookDTO);
         }

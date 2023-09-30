@@ -3,11 +3,12 @@ using LM.Application.Handlers;
 using LM.Application.Queries;
 using LM.Domain.Aggregates.Book;
 using LM.Domain.Aggregates.Identity;
-using LM.Domain.DomainServices;
+using LM.Domain.Aggregates.Loan;
 using LM.Domain.Enums;
 using LM.Domain.Repositories;
-using LM.Domain.ValueObjects;
 using Moq;
+using System.Collections.Concurrent;
+using System.Reflection.Metadata;
 
 namespace LM.Tests.UnitTests
 {
@@ -16,12 +17,12 @@ namespace LM.Tests.UnitTests
     {
         private Mock<IBookRepository> _bookRepositoryMock;
         private Mock<IUserRepository> _userRepositoryMock;
-        private Mock<IIdentityService> _identityServiceMock;
+        private Mock<ILoanRepository> _loanRepositoryMock;
 
         private AddBookCommandHandler _addBookHandler;
         private DeleteBookCommandHandler _deleteBookHandler;
         private GetAllBooksQueryHandler _getAllBooksQueryHandler;
-        private GetNumberAvailableBookQueryHandler _getNumberAvailableBookQueryHandler;
+        private GetAvailableBooksQueryHandler _getNumberAvailableBookQueryHandler;
         private LoanBookCommandHandler _loanBookCommandHandler;
         private ReturnBookCommandHandler _returnBookCommandHandler;
 
@@ -31,14 +32,14 @@ namespace LM.Tests.UnitTests
             // Arrange
             _bookRepositoryMock = new Mock<IBookRepository>();
             _userRepositoryMock = new Mock<IUserRepository>();
-            _identityServiceMock = new Mock<IIdentityService>();
+            _loanRepositoryMock = new Mock<ILoanRepository>();
 
             _addBookHandler = new AddBookCommandHandler(_bookRepositoryMock.Object);
             _deleteBookHandler = new DeleteBookCommandHandler(_bookRepositoryMock.Object);
             _getAllBooksQueryHandler = new GetAllBooksQueryHandler(_bookRepositoryMock.Object);
-            _getNumberAvailableBookQueryHandler = new GetNumberAvailableBookQueryHandler(_bookRepositoryMock.Object);
-            _loanBookCommandHandler = new LoanBookCommandHandler(_bookRepositoryMock.Object, _userRepositoryMock.Object);
-            _returnBookCommandHandler = new ReturnBookCommandHandler(_bookRepositoryMock.Object);
+            _getNumberAvailableBookQueryHandler = new GetAvailableBooksQueryHandler(_bookRepositoryMock.Object);
+            _loanBookCommandHandler = new LoanBookCommandHandler(_loanRepositoryMock.Object, _bookRepositoryMock.Object, _userRepositoryMock.Object);
+            _returnBookCommandHandler = new ReturnBookCommandHandler(_loanRepositoryMock.Object);
         }
 
         [Test]
@@ -54,7 +55,7 @@ namespace LM.Tests.UnitTests
             var command = new AddBookCommand(title, author, isbn, rentPrice, currency);
 
             // Setup mock to simulate the behavior of the repository
-            _bookRepositoryMock.Setup(repo => repo.AddBook(It.IsAny<Book>())).Verifiable();
+            _bookRepositoryMock.Setup(repo => repo.Add(It.IsAny<Book>())).Verifiable();
 
             // Act
             var result = _addBookHandler.Handle(command, CancellationToken.None);
@@ -69,19 +70,18 @@ namespace LM.Tests.UnitTests
         {
             // Arrange
             string title = "Some Title";
-            string author = "Some Author";
+            Author author = new("Some", "Author");
             string isbn = "9781234567890";
-            string rentPrice = "10.23";
-            string currency = "RON";
+            Money money = new(10.23m, Currency.RON);
 
             // Create a book object
-            var book = new Book(title, author, new ISBN(isbn), new Money(decimal.Parse(rentPrice), Enum.Parse<CurrencyEnum>(currency)));
+            var book = new Book(title, author, new ISBN(isbn), money);
 
             // Set up the repository to return the book when GetBookByISBN is called
-            _bookRepositoryMock.Setup(repo => repo.GetBookByISBN(It.IsAny<ISBN>())).Returns(book);
+            _bookRepositoryMock.Setup(repo => repo.FindByISBN(It.IsAny<ISBN>())).Returns(book);
 
             // Set up the repository to remove the book when RemoveBook is called
-            _bookRepositoryMock.Setup(repo => repo.RemoveBook(It.IsAny<ISBN>())).Returns(book);
+            _bookRepositoryMock.Setup(repo => repo.Remove(It.IsAny<ISBN>())).Returns(book);
 
             // Now prepare to delete the book
             var deleteCommand = new DeleteBookCommand(isbn);
@@ -90,7 +90,7 @@ namespace LM.Tests.UnitTests
             var result = _deleteBookHandler.Handle(deleteCommand, CancellationToken.None).Result;
 
             // Assert
-            _bookRepositoryMock.Verify(repo => repo.RemoveBook(It.IsAny<ISBN>()), Times.Once);
+            _bookRepositoryMock.Verify(repo => repo.Remove(It.IsAny<ISBN>()), Times.Once);
         }
 
         [Test]
@@ -99,13 +99,13 @@ namespace LM.Tests.UnitTests
             // Define a list of books
             var books = new List<Book>
             {
-                new Book("Title1", "Author1", new ISBN("9781234567890"), new Money(10m, CurrencyEnum.USD)),
-                new Book("Title2", "Author2", new ISBN("9781234567891"), new Money(15m, CurrencyEnum.EUR)),
+                new Book("Title1", new("Author","1"), new ISBN("9781234567890"), new Money(10m, Currency.USD)),
+                new Book("Title2", new("Author","2"), new ISBN("9781234567891"), new Money(15m, Currency.EUR)),
                 // Add more books as needed
             };
 
             // Set up the mock repository to return the list of books
-            _bookRepositoryMock.Setup(repo => repo.GetAllBooks()).Returns(books.AsQueryable());
+            _bookRepositoryMock.Setup(repo => repo.GetAll()).Returns(books.AsQueryable());
 
             // Act
             var result = _getAllBooksQueryHandler.Handle(new GetAllBooksQuery(), CancellationToken.None).Result;
@@ -119,101 +119,77 @@ namespace LM.Tests.UnitTests
                 Assert.Multiple(() =>
                 {
                     Assert.That(result[i].Title, Is.EqualTo(books[i].Title));
-                    Assert.That(result[i].Author, Is.EqualTo(books[i].Author));
+                    Assert.That(result[i].Author, Is.EqualTo(books[i].Author.GetFormattedName()));
                 });
             }
 
             // Optionally, verify that the GetAllBooks method of the repository was called once
-            _bookRepositoryMock.Verify(repo => repo.GetAllBooks(), Times.Once);
+            _bookRepositoryMock.Verify(repo => repo.GetAll(), Times.Once);
         }
 
         [Test]
         public void Should_Get_Number_Available_Books()
         {
+            var isbn1 = "9781234567890";
+            var book1 = new Book("Title1", new("Author", "1"), new ISBN(isbn1), new Money(10m, Currency.USD));
+            book1.AddItem(new Money(9m, Currency.EUR));
 
             // Define a list of books
             var books = new List<Book>
             {
-                new Book("Title1", "Author1", new ISBN("9781234567890"), new Money(10m, CurrencyEnum.USD)),
-                new Book("Title2", "Author2", new ISBN("9781234567891"), new Money(15m, CurrencyEnum.EUR)),
-                // Add more books as needed
+               book1,
             };
 
             // Set up the mock repository to return the list of books
-            _bookRepositoryMock.Setup(repo => repo.GetAllBooks()).Returns(books.AsQueryable());
+            _bookRepositoryMock.Setup(repo => repo.FindByISBN(new ISBN(isbn1))).Returns(book1);
 
             // Act
-            var query = new GetNumberAvailableBookQuery("Title1", "Author1");
+            var query = new GetAvailableBooksQuery(isbn1);
 
             var result = _getNumberAvailableBookQueryHandler.Handle(query, CancellationToken.None).Result;
 
             // Assert
-            Assert.That(result, Is.EqualTo(1));
+            Assert.That(result, Is.EqualTo(2));
         }
 
         [Test]
         public void Should_Loan_Book()
         {
             // Arrange
-            var isbnValue = "9781234567890";
-            var isbn = new ISBN(isbnValue);
-            var username = "TestUser";
-            var loanDate = DateTime.Now;
+            var mockUser = new User("Bibliotecar1", "hashedPassword", UserRole.Librarian);
+            var mockBook = new Book("Sample Book", new Author("John", "Doe"), new ISBN("1234567891011"), new Money(50m, Currency.RON));
+            mockBook.AddItem(new Money(50m, Currency.RON)); // Add a book item to mock data
 
-            var user = new User(username, "TestPassword", UserRoleEnum.Librarian);
-            var book = new Book("Test Title", "Test Author", isbn, new Money(100m, CurrencyEnum.USD));
+            _userRepositoryMock.Setup(x => x.GetUserByUsername(It.IsAny<string>())).Returns(mockUser);
+            _bookRepositoryMock.Setup(x => x.FindByISBN(It.IsAny<ISBN>())).Returns(mockBook);
 
-            _bookRepositoryMock.Setup(repo => repo.GetBookByISBN(isbn)).Returns(book);
-            _userRepositoryMock.Setup(repo => repo.GetUserByUsername(username)).Returns(user);
-
-            var command = new LoanBookCommand(isbnValue, username);
+            var command = new LoanBookCommand("1234567891011", "Cititor1");
 
             // Act
             _loanBookCommandHandler.Handle(command, CancellationToken.None).Wait();
-            Assert.Multiple(() =>
-            {
 
-                // Assert
-                Assert.That(book.IsAvailable, Is.False, "Book should not be available.");
-                Assert.That(book.Loans, Is.Not.Empty, "No loans found.");
-            });
-            var loan = book.Loans.LastOrDefault(l => l.UserId == user.Id);
-            Assert.That(loan, Is.Not.Null, "Loan for the given user ID not found.");
+            // Assert
+            _loanRepositoryMock.Verify(x => x.Add(It.Is<Loan>(l => l.UserId == mockUser.Id && l.BookItemId == mockBook.BookItems.First().Id)), Times.Once);
         }
 
         [Test]
-        public void Should_Return_Book()
+        public async Task Should_Return_Book()
         {
-
             // Arrange
-            var isbnValue = "9781234567890";
-            var isbn = new ISBN(isbnValue);
-            var username = "TestUser";
-            var loanDate = DateTime.Now;
+            var mockUser = new User("Bibliotecar1", "hashedPassword", UserRole.Librarian);
+            var bookItemId = Guid.NewGuid();
+            var loan = new Loan(bookItemId, mockUser.Id);
 
-            var user = new User(username, "TestPassword", UserRoleEnum.Librarian);
-            var book = new Book("Test Title", "Test Author", isbn, new Money(100m, CurrencyEnum.USD));
+            _loanRepositoryMock.Setup(x => x.FindByBookItemId(bookItemId)).Returns(loan);
 
-            _bookRepositoryMock.Setup(repo => repo.GetBookByISBN(isbn)).Returns(book);
-            _userRepositoryMock.Setup(repo => repo.GetUserByUsername(username)).Returns(user);
-
-            var loanCommand = new LoanBookCommand(isbnValue, username);
-            var returnCommand = new ReturnBookCommand(isbnValue);
+            var returnDate = new DateTime(2023, 1, 1); // fixed date
+            var command = new ReturnBookCommand(bookItemId.ToString(), BookQualityState.Good.Name, returnDate.ToString("o"));
 
             // Act
-            _loanBookCommandHandler.Handle(loanCommand, CancellationToken.None).Wait();
-            _returnBookCommandHandler.Handle(returnCommand, CancellationToken.None).Wait();
+            await _returnBookCommandHandler.Handle(command, default);
 
-            Assert.Multiple(() =>
-            {
-
-                // Assert
-                Assert.That(book.IsAvailable, Is.True, "Book should be available.");
-                Assert.That(book.Loans, Is.Not.Empty, "No loans found.");
-            });
-            var loan = book.Loans.LastOrDefault(l => l.UserId == user.Id);
-            Assert.That(loan, Is.Not.Null, "Loan for the given user ID not found.");
+            // Assert
+            Assert.AreEqual(returnDate, loan.ReturnDate);
         }
-
     }
 }

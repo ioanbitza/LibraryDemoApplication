@@ -1,6 +1,8 @@
-﻿namespace LM.Domain.ValueObjects
+﻿using LM.Domain.SeedWork;
+
+namespace LM.Domain.Aggregates.Book
 {
-    public class ISBN
+    public class ISBN : ValueObject
     {
         private readonly long _value;
 
@@ -9,14 +11,8 @@
             if (string.IsNullOrWhiteSpace(value)) throw new ArgumentNullException(nameof(value));
             // TODO: Add more ISBN validation logic here.
             if (value.Length != 13) throw new ArgumentException("The ISBN lenght should have 13 digits.");
-            if (Int64.TryParse(value, out var valueint))
-            {
-                _value = valueint;
-            }
-            else
-            {
-                throw new ArgumentException("The ISBN should be a number.");
-            }
+            if (!long.TryParse(value, out var valueint)) throw new ArgumentException("The ISBN should be a number.");
+            _value = valueint;
         }
 
         public ISBN(long value)
@@ -38,6 +34,11 @@
         public override int GetHashCode()
         {
             return _value.GetHashCode();
+        }
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Value;
         }
     }
 }

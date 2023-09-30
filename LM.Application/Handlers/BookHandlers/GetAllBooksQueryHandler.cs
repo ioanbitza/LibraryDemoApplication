@@ -1,7 +1,6 @@
-﻿using LM.Application.Queries;
-using LM.ConsoleApplication.DTOs;
+﻿using LM.Application.DTOs;
+using LM.Application.Queries;
 using LM.Domain.Repositories;
-using LM.Infrastructure.Repositories;
 using MediatR;
 
 namespace LM.Application.Handlers
@@ -17,13 +16,8 @@ namespace LM.Application.Handlers
 
         public Task<List<BookDTO>> Handle(GetAllBooksQuery request, CancellationToken cancellationToken)
         {
-            var books = _bookRepository.GetAllBooks().ToList();
-            var bookDTOs = new List<BookDTO>();
-
-            foreach (var book in books)
-            {
-                bookDTOs.Add(new BookDTO(book));
-            }
+            var books = _bookRepository.GetAll();
+            var bookDTOs = books.Select(book => new BookDTO(book)).ToList();
 
             return Task.FromResult(bookDTOs);
         }

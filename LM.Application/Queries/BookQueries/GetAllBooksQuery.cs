@@ -1,4 +1,4 @@
-﻿using LM.ConsoleApplication.DTOs;
+﻿using LM.Application.DTOs;
 using MediatR;
 
 namespace LM.Application.Queries

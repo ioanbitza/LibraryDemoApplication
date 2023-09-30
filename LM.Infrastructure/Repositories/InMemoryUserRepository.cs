@@ -1,43 +1,48 @@
-﻿using LM.Domain.Aggregates.Book;
-using LM.Domain.Aggregates.Identity;
-using LM.Domain.DomainServices;
+﻿using LM.Domain.Aggregates.Identity;
 using LM.Domain.Enums;
 using LM.Domain.Repositories;
+using LM.Domain.SeedWork;
+using LM.Infrastructure.Utilities;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using System.Collections.Concurrent;
+using System.Security.Cryptography;
 
 namespace LM.Infrastructure.Repositories
 {
     public class InMemoryUserRepository : IUserRepository
     {
-        private readonly List<User> _users = new();
-        private readonly IIdentityService _identityService;
-        public InMemoryUserRepository(IIdentityService identityService)
-        {
-            _identityService = identityService;
+        private readonly ConcurrentDictionary<Guid, User> _users = new();
 
-            _users.Add(new User("Bibliotecar", identityService.HashPassword("ParolaBibliotecar"), UserRoleEnum.Librarian));
-            _users.Add(new User("Cititor1", identityService.HashPassword("ParolaCititor1"), UserRoleEnum.Reader));
-            _users.Add(new User("Cititor2", identityService.HashPassword("ParolaCititor2"), UserRoleEnum.Reader));
+        public InMemoryUserRepository()
+        {
+            var librarian = new User("Bibliotecar", PasswordHelper.HashPassword("ParolaBibliotecar"), UserRole.Librarian);
+            _users.TryAdd(librarian.Id, librarian);
+            var reader1 = new User("Cititor1", PasswordHelper.HashPassword("ParolaCititor1"), UserRole.Reader);
+            _users.TryAdd(reader1.Id, reader1);
+            var reader2 = new User("Cititor2", PasswordHelper.HashPassword("ParolaCititor2"), UserRole.Reader);
+            _users.TryAdd(reader2.Id, reader2);
         }
 
         public User GetUserByUsername(string username)
         {
             if (string.IsNullOrEmpty(username)) throw new ArgumentNullException(nameof(username));
 
-            var user = _users.SingleOrDefault(u => u.Username.Equals(username, StringComparison.OrdinalIgnoreCase)) ?? throw new KeyNotFoundException("User not found."); ;
+            var user = _users.Values.SingleOrDefault(u => u.Username.Equals(username, StringComparison.OrdinalIgnoreCase)) ?? throw new KeyNotFoundException("User not found."); ;
             return user;
         }  
         
+        //TO DO
         public User AddUser(string username, string password, string role)
         {
             if (string.IsNullOrEmpty(username)) throw new ArgumentNullException(nameof(username));
             if (string.IsNullOrEmpty(password)) throw new ArgumentNullException(nameof(password));
             if (string.IsNullOrEmpty(role)) throw new ArgumentNullException(nameof(role));
-            var isRole = Enum.TryParse<UserRoleEnum>(role, out var roleEnum);
-            if (isRole) throw new ArgumentException($"{role} is not a valid Role.");
+            var roleEnum = Enumeration.FromDisplayName<UserRole>(role);
+            if (roleEnum is null) throw new ArgumentException($"{role} is not a valid Role.");
 
-            User user = new(username, _identityService.HashPassword(password), roleEnum);
+            var user = new User(username, PasswordHelper.HashPassword(password), roleEnum);
 
-            _users.Add(user);
+            _users.TryAdd(user.Id, user);
 
             return user;
         }

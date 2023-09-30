@@ -1,14 +1,9 @@
-﻿using LM.Domain.Aggregates.Book;
+﻿using LM.Domain.Aggregates.Loan;
 
-namespace LM.ConsoleApplication.DTOs
+namespace LM.Application.DTOs
 {
     public class LoanDTO
     {
-        public Guid Id { get; }
-        public DateTime LoanDate { get; }
-        public DateTime DueDate { get; }
-        public DateTime? ReturnDate { get; }
-
         public LoanDTO(Loan loan)
         {
             Id = loan.Id;
@@ -16,5 +11,9 @@ namespace LM.ConsoleApplication.DTOs
             DueDate = loan.DueDate;
             ReturnDate = loan.ReturnDate;
         }
+        public Guid Id { get; }
+        public DateTime LoanDate { get; }
+        public DateTime DueDate { get; }
+        public DateTime? ReturnDate { get; }
     }
 }

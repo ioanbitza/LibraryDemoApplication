@@ -1,15 +1,18 @@
-﻿using LM.Domain.ValueObjects;
+﻿using LM.Domain.Enums;
 using MediatR;
 
 namespace LM.Domain.DomainEvents
 {
     public class BookReturnedEvent : INotification
     {
-        public ISBN ISBN { get; }
-
-        public BookReturnedEvent(ISBN isbn)
+        public Guid BookItemId { get; }
+        public DateTime ReturnDate { get; }
+        public BookQualityState QualityState { get; }
+        public BookReturnedEvent(Guid bookItemId, BookQualityState qualityState, DateTime returnDate)
         {
-            ISBN = isbn;
+            BookItemId = bookItemId;
+            QualityState = qualityState;
+            ReturnDate = returnDate;
         }
     }
 }

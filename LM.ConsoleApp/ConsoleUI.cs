@@ -1,9 +1,7 @@
 ﻿using LM.Application.Commands;
 using LM.Application.Queries;
-using LM.ConsoleApplication.DTOs;
 using LM.Domain.Aggregates.Identity;
 using LM.Domain.Enums;
-using LM.Domain.ValueObjects;
 using MediatR;
 
 namespace LM.ConsoleApp
@@ -51,7 +49,7 @@ namespace LM.ConsoleApp
                 {
                     switch (_currentUser.Role)
                     {
-                        case UserRoleEnum.Librarian:
+                        case var role when role == UserRole.Librarian:
                             {
                                 Console.WriteLine();
                                 Console.WriteLine("1. Register a new BOOK.");
@@ -107,7 +105,7 @@ namespace LM.ConsoleApp
 
                                 break;
                             }
-                        case UserRoleEnum.Reader:
+                        case var role when role == UserRole.Reader:
                             {
                                 // TO DO
                                 break;
@@ -154,8 +152,18 @@ namespace LM.ConsoleApp
                 Console.WriteLine($"|- ISBN:         {book.ISBN}");
                 Console.WriteLine($"|  Title:        {book.Title}");
                 Console.WriteLine($"|  Author:       {book.Author}");
-                Console.WriteLine($"|  Availability: {book.IsAvailable}");
-                Console.WriteLine($"|_ Rent price:   {book.RentPrice}");
+                Console.WriteLine($"|  Availability: {book.Availables}");
+                Console.WriteLine($"|  Items        ");
+                foreach (var bookItem in book.BookItems)
+                {
+                Console.WriteLine($"|     |     |-ID:           {bookItem.ID}");
+                Console.WriteLine($"|     |     | IsAvailable:  {bookItem.IsAvailable}");
+                Console.WriteLine($"|     |____ | Quality:      {bookItem.QualityState}");
+                Console.WriteLine($"|     |     | Rent price:   {bookItem.RentPrice}");
+                Console.WriteLine($"|     |     |_Registered:   {bookItem.DateRegistered}");
+                }
+                Console.WriteLine($"|_");
+                Console.WriteLine();
                 Console.WriteLine();
             }
         }
@@ -164,18 +172,14 @@ namespace LM.ConsoleApp
         {
 
             Console.WriteLine();
-            Console.WriteLine("What is the book author");
-            var author = Console.ReadLine();
+            Console.WriteLine("What is ISBN of the book");
+            var isbn = Console.ReadLine();
 
-            Console.WriteLine();
-            Console.WriteLine("What is the book title");
-            var title = Console.ReadLine();
-
-            var query = new GetNumberAvailableBookQuery(title, author);
+            var query = new GetAvailableBooksQuery(isbn);
             var result = await _mediator.Send(query);
 
             Console.WriteLine();
-            Console.WriteLine($"Available Books with Title: {title}, Author: {author} are {result}");
+            Console.WriteLine($"Number of available books for ISBN: {isbn} is {result}");
         }
 
         private async Task LoanABook()
@@ -185,23 +189,26 @@ namespace LM.ConsoleApp
             var isbn = Console.ReadLine();
 
             Console.WriteLine();
-            Console.WriteLine("Who is booking? Type his/her username:");
+            Console.WriteLine("Who is renting? Type his/her username:");
             var username = Console.ReadLine();
 
             var command = new LoanBookCommand(isbn, username);
 
             await _mediator.Send(command);
             Console.WriteLine();
-            Console.WriteLine("Thank you for returning the book.");
         }
 
         private async Task ReturnBook()
         {
             Console.WriteLine();
-            Console.WriteLine("What is the ISBN of the book you want to RETURN?");
-            var isbn = Console.ReadLine();
+            Console.WriteLine("What is the ID of the physical book of the book?");
+            var bookItemId = Console.ReadLine();     
+            
+            Console.WriteLine();
+            Console.WriteLine("What is quality of the book?");
+            var bookQuality = Console.ReadLine();
 
-            var command = new ReturnBookCommand(isbn);
+            var command = new ReturnBookCommand(bookItemId, bookQuality);
 
             await _mediator.Send(command);
 
@@ -217,7 +224,7 @@ namespace LM.ConsoleApp
 
             var command = new DeleteBookCommand(isbn);
 
-            BookDTO result = await _mediator.Send(command);
+            var result = await _mediator.Send(command);
 
             Console.WriteLine();
             Console.WriteLine($"The book with the author {result.Author} and the title {result.Title} has been deleted.");

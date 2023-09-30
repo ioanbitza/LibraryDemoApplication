@@ -1,4 +1,5 @@
 ﻿using LM.Application.Commands;
+using LM.Domain.Aggregates.Book;
 using LM.Domain.Repositories;
 using MediatR;
 
@@ -6,30 +7,20 @@ namespace LM.Application.Handlers
 {
     public class ReturnBookCommandHandler : IRequestHandler<ReturnBookCommand>
     {
-        private readonly IBookRepository _bookRepository;
+        private readonly ILoanRepository _loanRepository;
 
-        public ReturnBookCommandHandler(IBookRepository bookRepository)
+        public ReturnBookCommandHandler(ILoanRepository loanRepository)
         {
-            _bookRepository = bookRepository;
+            _loanRepository = loanRepository;
         }
 
         public Task Handle(ReturnBookCommand request, CancellationToken cancellationToken)
         {
-            var book = _bookRepository.GetBookByISBN(request.ISBN);
+            var loan = _loanRepository.FindByBookItemId(request.BookItemId);
 
-            var loan = book.Loans.LastOrDefault(l => l.ReturnDate == null);
-            if (loan == null)
-                throw new InvalidOperationException("The loan not found.");
+            loan.ReturnBook(request.BookQuality, request.ReturnDate);
 
-            loan.MarkAsReturned(request.ReturnDate);
-
-            if (request.ReturnDate > loan.DueDate)
-            {
-                var penalty = loan.CalculatePenalty(book.RentPrice);
-                Console.WriteLine($"Penalty due: {penalty} {book.RentPrice.Currency}");
-            }
-
-            book.ReturnBook(request.ReturnDate);
+            _loanRepository.Update(loan);
 
             return Unit.Task;
         }

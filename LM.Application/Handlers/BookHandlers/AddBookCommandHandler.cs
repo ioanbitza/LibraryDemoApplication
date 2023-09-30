@@ -17,7 +17,7 @@ namespace LM.Application.Handlers
         public Task Handle(AddBookCommand request, CancellationToken cancellationToken)
         {
             var book = new Book(request.Title, request.Author, request.ISBN, request.RentPrice);
-            _bookRepository.AddBook(book);
+            _bookRepository.Add(book);
             return Unit.Task;
         }
     }

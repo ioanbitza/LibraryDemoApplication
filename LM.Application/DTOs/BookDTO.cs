@@ -1,24 +1,24 @@
-﻿using LM.Domain.Aggregates.Book;
+﻿using LM.Application.Utilities;
+using LM.Domain.Aggregates.Book;
 
-namespace LM.ConsoleApplication.DTOs
+namespace LM.Application.DTOs
 {
     public class BookDTO
     {
-        public string ISBN { get; }
-        public string Title { get; }
-        public string Author { get; }
-        public bool IsAvailable { get; }
-        public string RentPrice { get; }
-        public List<LoanDTO> Loans { get; }
-
         public BookDTO(Book book)
         {
             Title = book.Title;
-            Author = book.Author;
+            Author = BookValueConverter.CreateStringFromAuthor(book.Author);
             ISBN = book.ISBN.Value.ToString();
-            IsAvailable = book.IsAvailable;
-            RentPrice = $"{book.RentPrice.Amount} {book.RentPrice.Currency}";
-            Loans = book.Loans.Select(loan => new LoanDTO(loan)).ToList();
+            Totals = book.Totals;
+            Availables = book.Totals;
+            BookItems = book.BookItems.Select(bi => new BookItemDTO(bi)).ToList();
         }
+        public string ISBN { get; }
+        public string Title { get; }
+        public string Author { get; }
+        public int Totals { get; }
+        public int Availables { get; }
+        public List<BookItemDTO> BookItems { get; }
     }
 }

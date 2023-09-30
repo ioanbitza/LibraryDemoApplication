@@ -1,15 +1,14 @@
-﻿using LM.Domain.ValueObjects;
-using MediatR;
+﻿using MediatR;
 
 namespace LM.Domain.DomainEvents
 {
     public class BookLoanedEvent : INotification
     {
-        public ISBN ISBN { get; }
+        public Guid BookItemId { get; }
 
-        public BookLoanedEvent(ISBN isbn)
+        public BookLoanedEvent(Guid bookItemId)
         {
-            ISBN = isbn;
+            BookItemId = bookItemId;
         }
     }
 }
