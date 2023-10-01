@@ -16,8 +16,18 @@ namespace LM.Application.Handlers
 
         public Task Handle(AddBookCommand request, CancellationToken cancellationToken)
         {
-            var book = new Book(request.Title, request.Author, request.ISBN, request.RentPrice);
-            _bookRepository.Add(book);
+            var existedBook = _bookRepository.FindByISBN(request.ISBN);
+            if(existedBook is null)
+            {
+                var book = new Book(request.Title, request.Author, request.ISBN, request.RentPrice);
+                _bookRepository.Add(book);
+            }
+            else
+            {
+                existedBook.AddItem(request.RentPrice);
+                _bookRepository.Update(existedBook);
+            }
+
             return Unit.Task;
         }
     }

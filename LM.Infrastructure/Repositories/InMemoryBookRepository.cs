@@ -1,10 +1,7 @@
 ﻿using LM.Domain.Aggregates.Book;
 using LM.Domain.Enums;
 using LM.Domain.Repositories;
-using LM.Domain.SeedWork;
 using System.Collections.Concurrent;
-using System.Linq;
-using System.Net;
 
 namespace LM.Infrastructure.Repositories
 {

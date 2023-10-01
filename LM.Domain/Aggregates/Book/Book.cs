@@ -26,10 +26,5 @@ namespace LM.Domain.Aggregates.Book
             var item = new BookItem(rentPrice);
             _bookItems.Add(item);
         }
-
-        public object Where()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -93,7 +93,6 @@ namespace LM.ConsoleApp
 
                                 Console.WriteLine("Clean console(Y/N)?");
                                 var cleanConsole = Console.ReadLine();
-                                Console.ReadKey(true);  // 'true' means don't display the pressed key
                                 if ( cleanConsole is null or "Y" or "y" )
                                 {
                                     Console.Clear();
@@ -119,21 +118,22 @@ namespace LM.ConsoleApp
         {
             Console.WriteLine();
             Console.WriteLine("What is the title of the book?");
+            Console.WriteLine("Ex:Atomic Habits");
             var title = Console.ReadLine();
             Console.WriteLine();
             Console.WriteLine("What is the author of the book?");
+            Console.WriteLine("Ex:James Clear");
             var author = Console.ReadLine();
             Console.WriteLine();
             Console.WriteLine("What is the book ISBN?");
+            Console.WriteLine("Ex: 1234567890123");
             var isbn = Console.ReadLine();
             Console.WriteLine();
             Console.WriteLine("What is the rent price of the book?");
+            Console.WriteLine("Ex:50 RON or 10.33EUR");
             var rentPrice = Console.ReadLine();
-            Console.WriteLine();
-            Console.WriteLine("What is the currency?");
-            var currency = Console.ReadLine();
 
-            var command = new AddBookCommand(title, author, isbn, rentPrice, currency);
+            var command = new AddBookCommand(title, author, isbn, rentPrice);
 
             await _mediator.Send(command);
             Console.WriteLine();
@@ -152,15 +152,16 @@ namespace LM.ConsoleApp
                 Console.WriteLine($"|- ISBN:         {book.ISBN}");
                 Console.WriteLine($"|  Title:        {book.Title}");
                 Console.WriteLine($"|  Author:       {book.Author}");
-                Console.WriteLine($"|  Availability: {book.Availables}");
+                Console.WriteLine($"|  Availables:   {book.Availables}");
                 Console.WriteLine($"|  Items        ");
                 foreach (var bookItem in book.BookItems)
                 {
-                Console.WriteLine($"|     |     |-ID:           {bookItem.ID}");
-                Console.WriteLine($"|     |     | IsAvailable:  {bookItem.IsAvailable}");
-                Console.WriteLine($"|     |____ | Quality:      {bookItem.QualityState}");
-                Console.WriteLine($"|     |     | Rent price:   {bookItem.RentPrice}");
-                Console.WriteLine($"|     |     |_Registered:   {bookItem.DateRegistered}");
+                    Console.WriteLine($"|     |     |-ID:           {bookItem.ID}");
+                    Console.WriteLine($"|     |     | Available:  {bookItem.IsAvailable}");
+                    Console.WriteLine($"|     |____ | Quality:      {bookItem.QualityState}");
+                    Console.WriteLine($"|     |     | Rent price:   {bookItem.RentPrice}");
+                    Console.WriteLine($"|     |     |_Registered:   {bookItem.DateRegistered}");
+                    Console.WriteLine($"|     |");
                 }
                 Console.WriteLine($"|_");
                 Console.WriteLine();
@@ -172,7 +173,9 @@ namespace LM.ConsoleApp
         {
 
             Console.WriteLine();
-            Console.WriteLine("What is ISBN of the book");
+            Console.WriteLine("What is the book ISBN?");
+            Console.WriteLine("Ex:1234567890123");
+
             var isbn = Console.ReadLine();
 
             var query = new GetAvailableBooksQuery(isbn);
@@ -186,10 +189,12 @@ namespace LM.ConsoleApp
         {
             Console.WriteLine();
             Console.WriteLine("What is the ISBN of the book you want to loan?");
+            Console.WriteLine("Ex:1234567890123");
             var isbn = Console.ReadLine();
 
             Console.WriteLine();
-            Console.WriteLine("Who is renting? Type his/her username:");
+            Console.WriteLine("Who is renting?");
+            Console.WriteLine("Type his/her username:");
             var username = Console.ReadLine();
 
             var command = new LoanBookCommand(isbn, username);
@@ -202,10 +207,12 @@ namespace LM.ConsoleApp
         {
             Console.WriteLine();
             Console.WriteLine("What is the ID of the physical book of the book?");
+            Console.WriteLine("Ex:4843633c-7e97-4647-85c5-4df53443c187");
             var bookItemId = Console.ReadLine();     
             
             Console.WriteLine();
             Console.WriteLine("What is quality of the book?");
+            Console.WriteLine("Ex: New, LikeNew, Good, Acceptable, Damaged, Repaired, Unusable");
             var bookQuality = Console.ReadLine();
 
             var command = new ReturnBookCommand(bookItemId, bookQuality);
@@ -219,7 +226,8 @@ namespace LM.ConsoleApp
         private async Task DeleteBook()
         {
             Console.WriteLine();
-            Console.WriteLine("What is the ISBN of the book you want to DELETE?");
+            Console.WriteLine("What is the ISBN of the book you want to remove?");
+            Console.WriteLine("Ex:1234567890123");
             var isbn = Console.ReadLine();
 
             var command = new DeleteBookCommand(isbn);

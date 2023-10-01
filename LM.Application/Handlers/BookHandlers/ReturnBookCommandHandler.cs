@@ -1,5 +1,4 @@
 ﻿using LM.Application.Commands;
-using LM.Domain.Aggregates.Book;
 using LM.Domain.Repositories;
 using MediatR;
 
